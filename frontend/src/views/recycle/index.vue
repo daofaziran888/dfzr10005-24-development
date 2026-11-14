@@ -31,12 +31,21 @@
       <thead>
         <tr>
           <th v-for="column in columns" :key="column">{{ column }}</th>
+          <th>保护来源</th>
+          <th>保护演练单号</th>
+          <th>禁止永久清理</th>
           <th>可执行动作</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="row in rows" :key="String(row.id)">
           <td v-for="column in columns" :key="column">{{ row[column] ?? '—' }}</td>
+          <td>{{ row['保护来源'] ?? '—' }}</td>
+          <td>{{ row['保护演练单号'] ?? '—' }}</td>
+          <td>
+            <span v-if="row['禁止永久清理'] === '是'" class="warn-text">是</span>
+            <span v-else class="muted-text">否</span>
+          </td>
           <td class="row-actions">
             <button
               v-for="action in actions"
@@ -50,7 +59,7 @@
           </td>
         </tr>
         <tr v-if="!rows.length">
-          <td :colspan="columns.length + 1" class="empty-state">暂无数据回收站数据，可先登记回收记录</td>
+          <td :colspan="columns.length + 4" class="empty-state">暂无数据回收站数据，可先登记回收记录</td>
         </tr>
       </tbody>
     </table>
@@ -96,6 +105,11 @@ function openCreate() {
 
 async function runAction(action: string, row: Row) {
   errorMessage.value = ''
+  // 演练硬约束：可恢复期长于规则期限的命中表禁止直接永久清理。
+  if (action === '永久清理' && row['禁止永久清理'] === '是') {
+    errorMessage.value = `记录 ${row['记录编号']} 命中保留例外（保护来源：${row['保护来源']}），可恢复期内禁止永久清理`
+    return
+  }
   try {
     const response = await request(`${ENDPOINT}/${row.id}/actions`, {
       method: 'POST',

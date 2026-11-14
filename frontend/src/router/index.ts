@@ -11,6 +11,7 @@ const Score = () => import('@/views/score/index.vue')
 const Drift = () => import('@/views/drift/index.vue')
 const Catalog = () => import('@/views/catalog/index.vue')
 const Retention = () => import('@/views/retention/index.vue')
+const RetentionDrill = () => import('@/views/retention-drill/index.vue')
 const Dedup = () => import('@/views/dedup/index.vue')
 const Tier = () => import('@/views/tier/index.vue')
 const Baseline = () => import('@/views/baseline/index.vue')
@@ -32,6 +33,7 @@ const router = createRouter({
     { path: '/drift', name: 'drift', component: Drift },
     { path: '/catalog', name: 'catalog', component: Catalog },
     { path: '/retention', name: 'retention', component: Retention },
+    { path: '/retention-drill', name: 'retention-drill', component: RetentionDrill },
     { path: '/dedup', name: 'dedup', component: Dedup },
     { path: '/tier', name: 'tier', component: Tier },
     { path: '/baseline', name: 'baseline', component: Baseline },
